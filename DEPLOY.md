@@ -18,6 +18,7 @@ git init
 git add .
 git commit -m "UAS Pembelajaran Mesin - ObesityAI"
 git remote add origin https://github.com/USERNAME/uas-ml-obesitas.git
+git branch -M main
 git push -u origin main
 ```
 

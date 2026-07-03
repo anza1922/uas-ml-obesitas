@@ -369,7 +369,7 @@ with tab_pred:
             )
             weight = st.number_input(
                 "Berat Badan (kg)",
-                min_value=30.0, max_value=180.0, value=70.0, step=0.5,
+                min_value=30.0, max_value=300.0, value=70.0, step=0.5,
                 help="Berat badan dalam kilogram."
             )
             family_history = st.radio(
