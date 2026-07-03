@@ -1,66 +1,9 @@
-<?php
-$result = null;
-$error = null;
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Kumpulkan data dari form
-    $data = [
-        "gender" => $_POST['gender'],
-        "age" => floatval($_POST['age']),
-        "height" => floatval($_POST['height']),
-        "weight" => floatval($_POST['weight']),
-        "family_history_with_overweight" => $_POST['family_history_with_overweight'],
-        "favc" => $_POST['favc'],
-        "fcvc" => floatval($_POST['fcvc']),
-        "ncp" => floatval($_POST['ncp']),
-        "caec" => $_POST['caec'],
-        "calc" => $_POST['calc'],
-        "ch2o" => floatval($_POST['ch2o']),
-        "smoke" => $_POST['smoke'],
-        "scc" => $_POST['scc'],
-        "faf" => floatval($_POST['faf']),
-        "tue" => floatval($_POST['tue']),
-        "mtrans" => $_POST['mtrans']
-    ];
-
-    // Endpoint API FastAPI
-    $api_url = "https://uas-ml-obesitas.onrender.com";
-
-    // Inisialisasi cURL
-    $ch = curl_init($api_url);
-    $payload = json_encode($data);
-    
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-    
-    // Set HTTP Header untuk JSON
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json',
-        'Content-Length: ' . strlen($payload)
-    ]);
-    
-    $response = curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    
-    if(curl_errno($ch)){
-        $error = "Gagal menghubungi API: " . curl_error($ch);
-    } elseif ($http_code != 200) {
-        $error = "Error API (Kode: $http_code): " . $response;
-    } else {
-        $result = json_decode($response, true);
-    }
-    
-    curl_close($ch);
-}
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ObesityAI - PHP Integration</title>
+    <title>ObesityAI - HTML Integration</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -172,6 +115,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(15, 118, 110, 0.25);
         }
+        
+        .btn-submit:disabled {
+            background: #94A3B8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
 
         .result-card {
             background: white;
@@ -181,6 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             border-top: 6px solid var(--primary);
             animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            display: none;
         }
 
         .result-grid {
@@ -231,8 +182,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-bottom: 2rem;
             border: 1px solid #F87171;
             font-weight: 600;
+            display: none;
         }
 
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -240,97 +196,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="container">
     <div class="header">
         <h1>🩺 ObesityAI</h1>
-        <p>Prediksi Tingkat Obesitas (Integrasi PHP & FastAPI)</p>
+        <p>Prediksi Tingkat Obesitas (Integrasi HTML & FastAPI)</p>
     </div>
 
-    <?php if ($error): ?>
-        <div class="error-card">🚨 <?php echo $error; ?></div>
-    <?php endif; ?>
+    <!-- Container Error -->
+    <div id="errorCard" class="error-card">🚨 <span id="errorMsg"></span></div>
 
-    <?php if ($result && isset($result['status']) && $result['status'] == 'success'): ?>
-        <div class="result-card">
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <div class="r-title">Tingkat Obesitas Terdeteksi</div>
-                <div class="r-class">🎯 <?php echo $result['prediction']['label']; ?></div>
-                <div class="badge-info">
-                    <span>⚡ Model: <?php echo $result['model_used']; ?></span> | 
-                    <span>Akurasi: <?php echo $result['prediction']['confidence_percent']; ?>%</span>
-                </div>
+    <!-- Container Hasil -->
+    <div id="resultCard" class="result-card">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div class="r-title">Tingkat Obesitas Terdeteksi</div>
+            <div id="r-class" class="r-class">🎯 -</div>
+            <div class="badge-info">
+                <span>⚡ Model: <span id="r-model"></span></span> | 
+                <span>Akurasi: <span id="r-accuracy"></span>%</span>
             </div>
-
-            <div class="result-grid">
-                <!-- Kolom Kiri: Detail Pengguna & BMI -->
-                <div>
-                    <div class="section-box">
-                        <div class="box-title">📏 Indeks Massa Tubuh (BMI)</div>
-                        <div style="display: flex; align-items: baseline; gap: 0.5rem;">
-                            <span style="font-size: 3rem; font-weight: 800; color: var(--primary);"><?php echo $result['bmi_info']['bmi_value']; ?></span>
-                            <span style="font-weight: 600; color: var(--text-muted);">kg/m²</span>
-                        </div>
-                        <div style="color: #475569; font-weight: 600; margin-top: 0.2rem;">
-                            Kategori: <span style="color: #0F172A;"><?php echo $result['bmi_info']['bmi_category']; ?></span>
-                        </div>
-                    </div>
-
-                    <div class="section-box" style="background: #FFFBEB; border-color: #FDE68A;">
-                        <div class="box-title" style="color: #92400E;">💡 Saran & Rekomendasi Medis</div>
-                        <div style="color: #92400E; font-size: 0.95rem; line-height: 1.6;">
-                            <?php echo $result['recommendation']; ?>
-                        </div>
-                    </div>
-
-                    <div class="section-box">
-                        <div class="box-title">👤 Ringkasan Data Input</div>
-                        <table class="data-table">
-                            <tr><td>Jenis Kelamin</td><td><?php echo htmlspecialchars($_POST['gender']); ?></td></tr>
-                            <tr><td>Usia</td><td><?php echo htmlspecialchars($_POST['age']); ?> Tahun</td></tr>
-                            <tr><td>Tinggi / Berat</td><td><?php echo htmlspecialchars($_POST['height']); ?> m / <?php echo htmlspecialchars($_POST['weight']); ?> kg</td></tr>
-                            <tr><td>Makan Kalori Tinggi</td><td><?php echo htmlspecialchars($_POST['favc']); ?></td></tr>
-                            <tr><td>Olahraga / Minggu</td><td>Level <?php echo htmlspecialchars($_POST['faf']); ?></td></tr>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Kolom Kanan: Distribusi Probabilitas Model -->
-                <div>
-                    <div class="section-box">
-                        <div class="box-title">📊 Probabilitas per Kelas Obesitas</div>
-                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
-                            Berikut adalah seberapa yakin model AI memprediksi ke dalam 7 kategori kelas obesitas yang berbeda:
-                        </p>
-
-                        <?php 
-                        // Urutkan probabilitas dari yang terbesar
-                        $probs = $result['probabilities'];
-                        arsort($probs);
-                        
-                        foreach ($probs as $kelas => $persen): 
-                            // Beri warna khusus jika persennya di atas 0
-                            $barColor = ($persen == $result['prediction']['confidence_percent']) ? "linear-gradient(90deg, #0F766E, #0284C7)" : "#94A3B8";
-                            $textWeight = ($persen == $result['prediction']['confidence_percent']) ? "800" : "600";
-                            $textColor = ($persen == $result['prediction']['confidence_percent']) ? "#0F172A" : "#64748B";
-                        ?>
-                        <div class="prob-bar-container">
-                            <div class="prob-label">
-                                <span style="color: <?php echo $textColor; ?>; font-weight: <?php echo $textWeight; ?>;"><?php echo $kelas; ?></span>
-                                <span style="color: <?php echo $textColor; ?>; font-weight: <?php echo $textWeight; ?>;"><?php echo $persen; ?>%</span>
-                            </div>
-                            <div class="prob-track">
-                                <div class="prob-fill" style="width: <?php echo $persen; ?>%; background: <?php echo $barColor; ?>;"></div>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            </div>
-
-            <button class="btn-submit" style="background: #1E293B; margin-top: 1rem;" onclick="window.location.href='index.php'">
-                🔄 Analisis Prediksi Data Baru
-            </button>
         </div>
-    <?php else: ?>
 
-    <form method="POST" action="">
+        <div class="result-grid">
+            <!-- Kolom Kiri -->
+            <div>
+                <div class="section-box">
+                    <div class="box-title">📏 Indeks Massa Tubuh (BMI)</div>
+                    <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+                        <span id="r-bmi-val" style="font-size: 3rem; font-weight: 800; color: var(--primary);">0</span>
+                        <span style="font-weight: 600; color: var(--text-muted);">kg/m²</span>
+                    </div>
+                    <div style="color: #475569; font-weight: 600; margin-top: 0.2rem;">
+                        Kategori: <span id="r-bmi-cat" style="color: #0F172A;">-</span>
+                    </div>
+                </div>
+
+                <div class="section-box" style="background: #FFFBEB; border-color: #FDE68A;">
+                    <div class="box-title" style="color: #92400E;">💡 Saran & Rekomendasi Medis</div>
+                    <div id="r-recom" style="color: #92400E; font-size: 0.95rem; line-height: 1.6;">-</div>
+                </div>
+            </div>
+
+            <!-- Kolom Kanan -->
+            <div>
+                <div class="section-box">
+                    <div class="box-title">📊 Probabilitas per Kelas Obesitas</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+                        Berikut adalah seberapa yakin model AI memprediksi ke dalam 7 kategori:
+                    </p>
+                    <div id="probContainer"></div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-submit" style="background: #1E293B; margin-top: 1rem;" onclick="resetForm()">
+            🔄 Analisis Prediksi Data Baru
+        </button>
+    </div>
+
+    <!-- Form Input -->
+    <form id="predictionForm">
         <div class="form-grid">
             <div class="form-group">
                 <label>Jenis Kelamin</label>
@@ -448,11 +369,117 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
 
-        <button type="submit" class="btn-submit">Mulai Analisis Prediksi ✨</button>
+        <button type="submit" id="submitBtn" class="btn-submit">Mulai Analisis Prediksi ✨</button>
     </form>
-
-    <?php endif; ?>
 </div>
+
+<script>
+    // URL API Render kamu (jangan lupa tambahkan /predict di belakangnya)
+    const API_URL = "https://uas-ml-obesitas.onrender.com/predict";
+
+    document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const form = e.target;
+        const formData = new FormData(form);
+        const submitBtn = document.getElementById('submitBtn');
+        const errorCard = document.getElementById('errorCard');
+        
+        // Sembunyikan error dan set tombol loading
+        errorCard.style.display = 'none';
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Memproses... ⏳';
+
+        // Convert FormData to JSON (pastikan tipe data angka menjadi float)
+        const data = {
+            gender: formData.get('gender'),
+            age: parseFloat(formData.get('age')),
+            height: parseFloat(formData.get('height')),
+            weight: parseFloat(formData.get('weight')),
+            family_history_with_overweight: formData.get('family_history_with_overweight'),
+            favc: formData.get('favc'),
+            fcvc: parseFloat(formData.get('fcvc')),
+            ncp: parseFloat(formData.get('ncp')),
+            caec: formData.get('caec'),
+            calc: formData.get('calc'),
+            ch2o: parseFloat(formData.get('ch2o')),
+            smoke: formData.get('smoke'),
+            scc: formData.get('scc'),
+            faf: parseFloat(formData.get('faf')),
+            tue: parseFloat(formData.get('tue')),
+            mtrans: formData.get('mtrans')
+        };
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.detail || `Server Error: ${response.status}`);
+            }
+
+            const result = await response.json();
+            showResult(result);
+
+        } catch (error) {
+            document.getElementById('errorMsg').innerText = error.message || 'Gagal terhubung ke API.';
+            errorCard.style.display = 'block';
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Mulai Analisis Prediksi ✨';
+        }
+    });
+
+    function showResult(result) {
+        document.getElementById('predictionForm').style.display = 'none';
+        document.getElementById('resultCard').style.display = 'block';
+
+        document.getElementById('r-class').innerText = '🎯 ' + result.prediction.label;
+        document.getElementById('r-model').innerText = result.model_used;
+        document.getElementById('r-accuracy').innerText = result.prediction.confidence_percent;
+        document.getElementById('r-bmi-val').innerText = result.bmi_info.bmi_value;
+        document.getElementById('r-bmi-cat').innerText = result.bmi_info.bmi_category;
+        document.getElementById('r-recom').innerHTML = result.recommendation;
+
+        const probContainer = document.getElementById('probContainer');
+        probContainer.innerHTML = ''; // bersihkan konten lama
+
+        // Urutkan probabilitas dari terbesar ke terkecil
+        const probs = Object.entries(result.probabilities).sort((a, b) => b[1] - a[1]);
+
+        probs.forEach(([kelas, persen]) => {
+            const isTop = (persen == result.prediction.confidence_percent);
+            const barColor = isTop ? "linear-gradient(90deg, #0F766E, #0284C7)" : "#94A3B8";
+            const textWeight = isTop ? "800" : "600";
+            const textColor = isTop ? "#0F172A" : "#64748B";
+
+            const html = `
+                <div class="prob-bar-container">
+                    <div class="prob-label">
+                        <span style="color: ${textColor}; font-weight: ${textWeight};">${kelas}</span>
+                        <span style="color: ${textColor}; font-weight: ${textWeight};">${persen}%</span>
+                    </div>
+                    <div class="prob-track">
+                        <div class="prob-fill" style="width: ${persen}%; background: ${barColor};"></div>
+                    </div>
+                </div>
+            `;
+            probContainer.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    function resetForm() {
+        document.getElementById('resultCard').style.display = 'none';
+        document.getElementById('predictionForm').style.display = 'block';
+        // Reset form ke nilai awal jika mau: document.getElementById('predictionForm').reset();
+    }
+</script>
 
 </body>
 </html>
