@@ -157,6 +157,40 @@ def predict_obesity(data: PredictionInput):
         # 4. Hitung informasi BMI
         bmi_val, bmi_cat = bmi_info(data.height, data.weight)
         
+        # ── BMI Override (untuk data di luar distribusi training) ──────────
+        # Model dilatih dengan data Weight maks 173 kg. Input yang melebihi
+        # batas ini dapat menghasilkan prediksi tidak akurat karena scaler
+        # melakukan ekstrapolasi. Gunakan BMI aktual sebagai koreksi akhir.
+        import numpy as np
+        from inference import ORDER_TARGET as _OT
+        
+        WEIGHT_TRAIN_MAX = 173.0  # batas max data training
+        out_of_dist = data.weight > WEIGHT_TRAIN_MAX
+        
+        if out_of_dist:
+            # Tentukan kelas berdasarkan BMI aktual secara deterministik
+            if bmi_val < 18.5:
+                bmi_class = "Insufficient_Weight"
+            elif bmi_val < 25.0:
+                bmi_class = "Normal_Weight"
+            elif bmi_val < 27.5:
+                bmi_class = "Overweight_Level_I"
+            elif bmi_val < 30.0:
+                bmi_class = "Overweight_Level_II"
+            elif bmi_val < 35.0:
+                bmi_class = "Obesity_Type_I"
+            elif bmi_val < 40.0:
+                bmi_class = "Obesity_Type_II"
+            else:
+                bmi_class = "Obesity_Type_III"  # BMI >= 40 → Ekstrem
+            
+            # Override prediksi dan buat distribusi probabilitas baru
+            pred_class = bmi_class
+            override_idx = _OT.index(bmi_class)
+            probs = np.zeros(len(_OT))
+            probs[override_idx] = 1.0
+        # ── End BMI Override ───────────────────────────────────────────────
+        
         # 5. Susun respons (probabilitas per kelas dalam bentuk dictionary)
         from inference import ORDER_TARGET
         prob_dict = {
