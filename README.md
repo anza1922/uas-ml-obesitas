@@ -15,36 +15,27 @@ serta 8 model pembanding tambahan (total 11 model).
 
 ## Struktur Folder
 ```
-uas-ml-kelulusan-A11.2024.15791-Anza_Ali_S/
+ml-uas-A11.2024.15791-Anza_Ali_S/
 ├── data/
 │   ├── ObesityDataSet_raw_and_data_sinthetic.csv   # dataset mentah
 │   ├── obesity_cleaned_data.csv                    # dataset setelah preprocessing
 │   ├── data_dictionary.md                          # kamus data
 │   └── source_dataset.md                           # sumber & lisensi dataset
 ├── notebooks/
-│   ├── Soal02_Audit_Dataset_Preprocessing_Pipeline.ipynb
-│   ├── Soal03_Baseline_KNN_NaiveBayes_SVM.ipynb
-│   ├── Soal04_Optimasi_Perbandingan_Model.ipynb
-│   └── Soal05_Capstone_Aplikasi_Laporan.ipynb
+│   └── UAS_ML_Obesitas_A11_2024_15791_Anza_Ali_S.ipynb
 ├── src/
-│   ├── preprocessing.py          # pipeline preprocessing
-│   ├── inference.py              # modul inferensi terpusat
-│   ├── feature_selection.py      # seleksi fitur (ExtraTrees, SelectKBest, RFE)
-│   ├── evaluate.py               # evaluasi & visualisasi komparatif
-│   ├── train_knn.py              # training KNN baseline
-│   ├── train_naive_bayes.py      # training Naive Bayes baseline
-│   ├── train_svm.py              # training SVM baseline
-│   ├── train_optimization.py     # GridSearchCV untuk 3 model wajib
-│   ├── train_decision_tree.py
-│   ├── train_extra_trees.py
-│   ├── train_random_forest.py
-│   ├── train_lightgbm.py
-│   ├── train_xgboost.py
-│   ├── train_logistic_regression.py
-│   ├── train_semi_supervised.py  # LabelPropagation & LabelSpreading
-│   └── obesity_prediction_gradio.py  # Gradio app (versi src)
+│   ├── preprocessing.py       # pipeline preprocessing
+│   ├── inference.py           # modul inferensi terpusat
+│   ├── predict.py             # CLI prediksi & modul predict_single/predict_batch
+│   ├── ml_core.py             # definisi model & fungsi evaluasi
+│   ├── data_generator.py      # load & audit dataset
+│   ├── evaluate.py            # evaluasi & visualisasi komparatif
+│   ├── feature_selection.py   # seleksi fitur (ExtraTrees, SelectKBest, RFE)
+│   ├── train.py               # training semua 11 model sekaligus
+│   └── train_optimization.py  # GridSearchCV untuk 3 model wajib
 ├── models/
-│   ├── best_obesity_model.joblib       # model terbaik (SVM optimized)
+│   ├── best_model.joblib           # model terbaik keseluruhan
+│   ├── best_obesity_model.joblib   # alias model terbaik
 │   ├── knn_optimized.joblib
 │   ├── naivebayes_optimized.joblib
 │   ├── svm_optimized.joblib
@@ -60,17 +51,18 @@ uas-ml-kelulusan-A11.2024.15791-Anza_Ali_S/
 │   └── ordinal_encoder.joblib
 ├── reports/
 │   ├── audit_dataset.json
-│   ├── all_experiment_results.csv
-│   ├── eleven_model_comparison.csv
-│   ├── error_analysis.csv
+│   ├── all_experiment_results.csv         # tabel baseline vs optimized 3 model wajib
+│   ├── eleven_model_comparison.csv        # perbandingan seluruh 11 model
 │   ├── classification_reports.json
-│   └── *.png  (grafik eksperimen)
+│   ├── soal03_baseline_metrics.csv
+│   ├── soal03_confusion_matrices.png
+│   ├── boxplot_before.png
+│   └── boxplot_after.png
 ├── presentation/
-│   └── presentasi_uas_ml.pdf
+│   └── Presentasi_uas_ml.pdf
 ├── report/
-│   └── laporan_uas_ml_kelulusan.pdf
-├── app_streamlit.py      # Aplikasi Streamlit (jalankan: streamlit run app_streamlit.py)
-├── app_gradio.py         # Aplikasi Gradio   (jalankan: python app_gradio.py)
+│   └── Laporan_uas_ml_obesitas.pdf
+├── app_streamlit.py      # Aplikasi Streamlit utama
 ├── requirements.txt
 └── README.md
 ```
@@ -84,41 +76,30 @@ uas-ml-kelulusan-A11.2024.15791-Anza_Ali_S/
 pip install -r requirements.txt
 ```
 
-### 2. Training ulang model (opsional, model .joblib sudah tersedia)
+### 2. Jalankan aplikasi Streamlit (model sudah tersedia)
 ```bash
-# Training baseline 3 model wajib
-python src/train_knn.py
-python src/train_naive_bayes.py
-python src/train_svm.py
+streamlit run app_streamlit.py
+```
 
-# Optimasi dengan GridSearchCV
+### 3. Prediksi via CLI
+```bash
+python src/predict.py --gender L --age 25 --height 1.70 --weight 80
+```
+
+### 4. Training ulang model (opsional — model .joblib sudah tersedia)
+```bash
+# Training + optimasi 3 model wajib (KNN, NaiveBayes, SVM)
 python src/train_optimization.py
 
-# Training semua 11 model
-python src/train_decision_tree.py
-python src/train_extra_trees.py
-python src/train_random_forest.py
-python src/train_lightgbm.py
-python src/train_xgboost.py
-python src/train_logistic_regression.py
-python src/train_semi_supervised.py
+# Training semua 11 model sekaligus
+python src/train.py
+python src/train.py --model KNN
 ```
 
-### 3. Jalankan aplikasi
+### 5. Jalankan notebook
 ```bash
-# Streamlit (direkomendasikan)
-streamlit run app_streamlit.py
-
-# Gradio
-python app_gradio.py
+jupyter notebook notebooks/UAS_ML_Obesitas_A11_2024_15791_Anza_Ali_S.ipynb
 ```
-
-### 4. Jalankan notebook (urut)
-Buka Jupyter dan jalankan berurutan:
-1. `Soal02_Audit_Dataset_Preprocessing_Pipeline.ipynb`
-2. `Soal03_Baseline_KNN_NaiveBayes_SVM.ipynb`
-3. `Soal04_Optimasi_Perbandingan_Model.ipynb`
-4. `Soal05_Capstone_Aplikasi_Laporan.ipynb`
 
 ---
 
@@ -134,8 +115,8 @@ Buka Jupyter dan jalankan berurutan:
 | **SVM** | **Optimized** | **0.9615** | **0.9611** |
 | LightGBM | — | 0.9637 | 0.9628 |
 
-**Model terbaik (wajib):** SVM optimized (kernel RBF, GridSearchCV macro-F1)  
-**Model terbaik (keseluruhan 11 model):** LightGBM
+**Model terbaik (wajib):** SVM optimized (kernel linear, C=10)  
+**Model terbaik (keseluruhan 11 model):** LightGBM (F1-macro 0.9637)
 
 ---
 

@@ -1,48 +1,39 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>ObesityAI — Prediksi Tingkat Obesitas</title>
-    <meta name="description"
-        content="Prediksi tingkat obesitas secara cerdas berdasarkan data fisik dan gaya hidup Anda menggunakan model Machine Learning.">
+    <meta name="description" content="Prediksi tingkat obesitas secara cerdas berdasarkan data fisik dan gaya hidup Anda menggunakan model Machine Learning.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         /* ═══════════════════════════════════════════════
            DESIGN TOKENS
         ═══════════════════════════════════════════════ */
         :root {
-            --teal: #14b8a6;
-            --teal-dark: #0d9488;
-            --sky: #38bdf8;
-            --indigo: #818cf8;
-            --bg: #050d1a;
-            --surface: #0c1829;
-            --surface2: #111f35;
-            --border: rgba(20, 184, 166, 0.18);
-            --border2: rgba(255, 255, 255, 0.07);
-            --text: #e2e8f0;
-            --muted: #64748b;
-            --muted2: #94a3b8;
-            --radius: 16px;
-            --radius-sm: 10px;
-            --shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+            --teal:       #14b8a6;
+            --teal-dark:  #0d9488;
+            --sky:        #38bdf8;
+            --indigo:     #818cf8;
+            --bg:         #050d1a;
+            --surface:    #0c1829;
+            --surface2:   #111f35;
+            --border:     rgba(20, 184, 166, 0.18);
+            --border2:    rgba(255,255,255,0.07);
+            --text:       #e2e8f0;
+            --muted:      #64748b;
+            --muted2:     #94a3b8;
+            --radius:     16px;
+            --radius-sm:  10px;
+            --shadow:     0 24px 64px rgba(0,0,0,0.6);
         }
 
         /* ═══════════════════════════════════════════════
            RESET & BASE
         ═══════════════════════════════════════════════ */
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -54,8 +45,7 @@
         }
 
         /* Animated background blobs */
-        body::before,
-        body::after {
+        body::before, body::after {
             content: '';
             position: fixed;
             border-radius: 50%;
@@ -64,32 +54,20 @@
             z-index: 0;
             animation: blob 12s ease-in-out infinite alternate;
         }
-
         body::before {
-            width: 520px;
-            height: 520px;
-            background: radial-gradient(circle, rgba(20, 184, 166, 0.18) 0%, transparent 70%);
-            top: -120px;
-            left: -120px;
+            width: 520px; height: 520px;
+            background: radial-gradient(circle, rgba(20,184,166,0.18) 0%, transparent 70%);
+            top: -120px; left: -120px;
         }
-
         body::after {
-            width: 480px;
-            height: 480px;
-            background: radial-gradient(circle, rgba(56, 189, 248, 0.14) 0%, transparent 70%);
-            bottom: -100px;
-            right: -100px;
+            width: 480px; height: 480px;
+            background: radial-gradient(circle, rgba(56,189,248,0.14) 0%, transparent 70%);
+            bottom: -100px; right: -100px;
             animation-delay: -6s;
         }
-
         @keyframes blob {
-            from {
-                transform: scale(1) translate(0, 0);
-            }
-
-            to {
-                transform: scale(1.2) translate(30px, 20px);
-            }
+            from { transform: scale(1) translate(0, 0); }
+            to   { transform: scale(1.2) translate(30px, 20px); }
         }
 
         /* ═══════════════════════════════════════════════
@@ -111,14 +89,14 @@
         .header {
             text-align: center;
             margin-bottom: 2.5rem;
-            animation: fadeDown 0.7s cubic-bezier(.16, 1, .3, 1) both;
+            animation: fadeDown 0.7s cubic-bezier(.16,1,.3,1) both;
         }
 
         .logo-badge {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: linear-gradient(135deg, rgba(20, 184, 166, 0.15), rgba(56, 189, 248, 0.1));
+            background: linear-gradient(135deg, rgba(20,184,166,0.15), rgba(56,189,248,0.1));
             border: 1px solid var(--border);
             border-radius: 50px;
             padding: 0.45rem 1.1rem;
@@ -129,26 +107,16 @@
             text-transform: uppercase;
             margin-bottom: 1.2rem;
         }
-
         .logo-badge .dot {
-            width: 7px;
-            height: 7px;
+            width: 7px; height: 7px;
             background: var(--teal);
             border-radius: 50%;
             box-shadow: 0 0 8px var(--teal);
             animation: pulse-dot 1.8s ease-in-out infinite;
         }
-
         @keyframes pulse-dot {
-
-            0%,
-            100% {
-                box-shadow: 0 0 6px var(--teal);
-            }
-
-            50% {
-                box-shadow: 0 0 18px var(--teal);
-            }
+            0%,100% { box-shadow: 0 0 6px var(--teal); }
+            50%      { box-shadow: 0 0 18px var(--teal); }
         }
 
         .header h1 {
@@ -180,9 +148,9 @@
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 24px;
-            box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.06);
             padding: clamp(1.5rem, 5vw, 2.8rem);
-            animation: fadeUp 0.7s cubic-bezier(.16, 1, .3, 1) 0.15s both;
+            animation: fadeUp 0.7s cubic-bezier(.16,1,.3,1) 0.15s both;
         }
 
         /* ═══════════════════════════════════════════════
@@ -199,10 +167,7 @@
             overflow-x: auto;
             scrollbar-width: none;
         }
-
-        .steps-nav::-webkit-scrollbar {
-            display: none;
-        }
+        .steps-nav::-webkit-scrollbar { display: none; }
 
         .step-btn {
             flex: 1;
@@ -223,37 +188,29 @@
             transition: all 0.25s ease;
             white-space: nowrap;
         }
-
         .step-btn .step-num {
-            width: 22px;
-            height: 22px;
+            width: 22px; height: 22px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.07);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: rgba(255,255,255,0.07);
+            display: flex; align-items: center; justify-content: center;
             font-size: 0.72rem;
             font-weight: 700;
             flex-shrink: 0;
             transition: all 0.25s ease;
         }
-
         .step-btn.active {
             background: linear-gradient(135deg, var(--teal-dark), var(--sky));
             color: #fff;
-            box-shadow: 0 4px 16px rgba(20, 184, 166, 0.35);
+            box-shadow: 0 4px 16px rgba(20,184,166,0.35);
         }
-
         .step-btn.active .step-num {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255,255,255,0.25);
         }
-
         .step-btn.done {
             color: var(--teal);
         }
-
         .step-btn.done .step-num {
-            background: rgba(20, 184, 166, 0.15);
+            background: rgba(20,184,166,0.15);
             color: var(--teal);
         }
 
@@ -264,10 +221,7 @@
             display: none;
             animation: fadeUp 0.4s ease both;
         }
-
-        .form-section.active {
-            display: block;
-        }
+        .form-section.active { display: block; }
 
         .section-title {
             font-size: 1rem;
@@ -278,7 +232,6 @@
             align-items: center;
             gap: 0.6rem;
         }
-
         .section-title::after {
             content: '';
             flex: 1;
@@ -305,8 +258,7 @@
             letter-spacing: 0.03em;
         }
 
-        input,
-        select {
+        input, select {
             padding: 0.8rem 1rem;
             background: var(--surface2);
             border: 1.5px solid var(--border2);
@@ -319,24 +271,18 @@
             appearance: none;
             outline: none;
         }
-
         select {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 14px center;
             padding-right: 2.4rem;
         }
-
-        input:focus,
-        select:focus {
+        input:focus, select:focus {
             border-color: var(--teal);
-            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.12);
-            background: rgba(20, 184, 166, 0.05);
+            box-shadow: 0 0 0 3px rgba(20,184,166,0.12);
+            background: rgba(20,184,166,0.05);
         }
-
-        input::placeholder {
-            color: var(--muted);
-        }
+        input::placeholder { color: var(--muted); }
 
         .hint {
             font-size: 0.72rem;
@@ -352,7 +298,6 @@
             align-items: center;
             gap: 0.8rem;
         }
-
         .range-wrap input[type="range"] {
             flex: 1;
             padding: 0;
@@ -362,12 +307,10 @@
             cursor: pointer;
             height: 6px;
         }
-
         .range-wrap input[type="range"]:focus {
             box-shadow: none;
             background: transparent;
         }
-
         .range-val {
             min-width: 42px;
             text-align: right;
@@ -401,52 +344,39 @@
             transition: all 0.22s ease;
             letter-spacing: 0.02em;
         }
-
         .btn-primary {
             background: linear-gradient(135deg, var(--teal-dark) 0%, #0ea5e9 100%);
             color: #fff;
-            box-shadow: 0 6px 22px rgba(20, 184, 166, 0.3);
+            box-shadow: 0 6px 22px rgba(20,184,166,0.3);
             flex: 1;
         }
-
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 32px rgba(20, 184, 166, 0.45);
+            box-shadow: 0 10px 32px rgba(20,184,166,0.45);
         }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
+        .btn-primary:active { transform: translateY(0); }
 
         .btn-ghost {
             background: var(--surface2);
             color: var(--muted2);
             border: 1.5px solid var(--border2);
         }
-
         .btn-ghost:hover {
-            background: rgba(255, 255, 255, 0.07);
+            background: rgba(255,255,255,0.07);
             color: var(--text);
         }
 
         .btn-submit {
             background: linear-gradient(135deg, var(--teal-dark) 0%, var(--indigo) 100%);
             color: #fff;
-            box-shadow: 0 8px 28px rgba(129, 140, 248, 0.3);
+            box-shadow: 0 8px 28px rgba(129,140,248,0.3);
             flex: 1;
             font-size: 1rem;
             padding: 1rem 2rem;
         }
-
         .btn-submit:hover {
             transform: translateY(-3px);
-            box-shadow: 0 14px 40px rgba(129, 140, 248, 0.45);
-        }
-
-        .btn-submit:disabled {
-            opacity: 0.65;
-            cursor: not-allowed;
-            transform: none;
+            box-shadow: 0 14px 40px rgba(129,140,248,0.45);
         }
 
         .btn-reset {
@@ -456,71 +386,9 @@
             width: 100%;
             margin-top: 1rem;
         }
-
         .btn-reset:hover {
             border-color: var(--teal);
             color: var(--teal);
-        }
-
-        /* Loading overlay */
-        .loading-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(5, 13, 26, 0.75);
-            backdrop-filter: blur(6px);
-            z-index: 999;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 1.2rem;
-        }
-
-        .loading-overlay.show {
-            display: flex;
-        }
-
-        .spinner {
-            width: 54px;
-            height: 54px;
-            border: 4px solid rgba(20, 184, 166, 0.2);
-            border-top-color: var(--teal);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .loading-text {
-            color: var(--teal);
-            font-size: 0.95rem;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-        }
-
-        /* Error banner */
-        .error-banner {
-            display: none;
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05));
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: var(--radius-sm);
-            padding: 1rem 1.2rem;
-            margin-top: 1rem;
-            color: #fca5a5;
-            font-size: 0.88rem;
-            line-height: 1.6;
-        }
-
-        .error-banner.show {
-            display: block;
-        }
-
-        .error-banner strong {
-            color: #f87171;
         }
 
         /* ═══════════════════════════════════════════════
@@ -528,7 +396,7 @@
         ═══════════════════════════════════════════════ */
         #resultView {
             display: none;
-            animation: fadeUp 0.6s cubic-bezier(.16, 1, .3, 1) both;
+            animation: fadeUp 0.6s cubic-bezier(.16,1,.3,1) both;
         }
 
         .result-hero {
@@ -536,12 +404,11 @@
             padding: 2rem 1rem 1.5rem;
             position: relative;
         }
-
         .result-hero::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse at 50% 0%, rgba(20, 184, 166, 0.12) 0%, transparent 65%);
+            background: radial-gradient(ellipse at 50% 0%, rgba(20,184,166,0.12) 0%, transparent 65%);
             border-radius: var(--radius);
             pointer-events: none;
         }
@@ -550,19 +417,11 @@
             font-size: 3.5rem;
             display: block;
             margin-bottom: 0.8rem;
-            animation: popIn 0.5s cubic-bezier(.16, 1, .3, 1) 0.2s both;
+            animation: popIn 0.5s cubic-bezier(.16,1,.3,1) 0.2s both;
         }
-
         @keyframes popIn {
-            from {
-                transform: scale(0.5);
-                opacity: 0;
-            }
-
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
+            from { transform: scale(0.5); opacity: 0; }
+            to   { transform: scale(1);   opacity: 1; }
         }
 
         .result-label {
@@ -579,8 +438,8 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: rgba(20, 184, 166, 0.1);
-            border: 1px solid rgba(20, 184, 166, 0.25);
+            background: rgba(20,184,166,0.1);
+            border: 1px solid rgba(20,184,166,0.25);
             border-radius: 50px;
             padding: 0.4rem 1rem;
             font-size: 0.85rem;
@@ -604,17 +463,13 @@
             position: relative;
             overflow: hidden;
         }
-
         .info-box::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 3px;
             background: linear-gradient(90deg, var(--teal), var(--sky));
         }
-
         .info-box .ib-label {
             font-size: 0.72rem;
             font-weight: 700;
@@ -623,14 +478,12 @@
             color: var(--muted);
             margin-bottom: 0.5rem;
         }
-
         .info-box .ib-value {
             font-size: 2rem;
             font-weight: 800;
             color: var(--teal);
             line-height: 1.1;
         }
-
         .info-box .ib-sub {
             font-size: 0.82rem;
             color: var(--muted2);
@@ -638,8 +491,8 @@
         }
 
         .recom-box {
-            background: linear-gradient(135deg, rgba(251, 191, 36, 0.08), rgba(245, 158, 11, 0.04));
-            border: 1px solid rgba(251, 191, 36, 0.2);
+            background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(245,158,11,0.04));
+            border: 1px solid rgba(251,191,36,0.2);
             border-radius: var(--radius-sm);
             padding: 1.3rem;
             margin-top: 1rem;
@@ -647,13 +500,7 @@
             gap: 0.8rem;
             align-items: flex-start;
         }
-
-        .recom-icon {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-            margin-top: 0.1rem;
-        }
-
+        .recom-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
         .recom-content .recom-title {
             font-size: 0.78rem;
             font-weight: 700;
@@ -662,7 +509,6 @@
             color: #fbbf24;
             margin-bottom: 0.4rem;
         }
-
         .recom-content p {
             font-size: 0.9rem;
             color: #fde68a;
@@ -674,7 +520,6 @@
         .prob-section {
             margin-top: 1rem;
         }
-
         .prob-title {
             font-size: 0.78rem;
             font-weight: 700;
@@ -683,52 +528,39 @@
             color: var(--muted);
             margin-bottom: 1rem;
         }
-
         .prob-item {
             margin-bottom: 0.85rem;
         }
-
         .prob-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 0.35rem;
         }
-
         .prob-name {
             font-size: 0.8rem;
             font-weight: 600;
             color: var(--muted2);
         }
-
-        .prob-name.top {
-            color: var(--text);
-        }
-
+        .prob-name.top { color: var(--text); }
         .prob-pct {
             font-size: 0.8rem;
             font-weight: 700;
             color: var(--muted);
         }
-
-        .prob-pct.top {
-            color: var(--teal);
-        }
-
+        .prob-pct.top { color: var(--teal); }
         .prob-track {
             height: 8px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.05);
             border-radius: 50px;
             overflow: hidden;
         }
-
         .prob-fill {
             height: 100%;
             border-radius: 50px;
-            background: rgba(100, 116, 139, 0.4);
-            transition: width 1.2s cubic-bezier(.4, 0, .2, 1);
+            background: rgba(100,116,139,0.4);
+            transition: width 1.2s cubic-bezier(.4,0,.2,1);
         }
-
         .prob-fill.top {
             background: linear-gradient(90deg, var(--teal), var(--sky));
         }
@@ -743,532 +575,510 @@
             color: var(--muted);
             line-height: 1.7;
         }
-
-        .footer-note strong {
-            color: var(--muted2);
-        }
+        .footer-note strong { color: var(--muted2); }
 
         /* ═══════════════════════════════════════════════
            ANIMATIONS
         ═══════════════════════════════════════════════ */
         @keyframes fadeDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-20px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(24px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
         /* ═══════════════════════════════════════════════
            RESPONSIVE
         ═══════════════════════════════════════════════ */
         @media (max-width: 640px) {
-            .page-wrap {
-                padding: 1rem 0.75rem 3rem;
-            }
-
-            .card {
-                border-radius: 18px;
-            }
-
-            .result-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-nav {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-            }
-
-            .step-btn {
-                font-size: 0.75rem;
-                padding: 0.55rem 0.75rem;
-            }
+            .page-wrap { padding: 1rem 0.75rem 3rem; }
+            .card { border-radius: 18px; }
+            .result-grid { grid-template-columns: 1fr; }
+            .form-nav { flex-direction: column; }
+            .btn { width: 100%; }
+            .step-btn { font-size: 0.75rem; padding: 0.55rem 0.75rem; }
         }
 
         @media (max-width: 400px) {
-            .step-btn .step-label {
-                display: none;
-            }
+            .step-btn .step-label { display: none; }
         }
     </style>
 </head>
-
 <body>
 
-    <div class="page-wrap">
+<div class="page-wrap">
 
-        <!-- HEADER -->
-        <div class="header">
-            <div class="logo-badge">
-                <span class="dot"></span>
-                Machine Learning · UDINUS
-            </div>
-            <h1>🩺 ObesityAI</h1>
-            <p>Prediksi tingkat obesitas berdasarkan data fisik dan gaya hidup Anda secara cerdas.</p>
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo-badge">
+            <span class="dot"></span>
+            Machine Learning · UDINUS
         </div>
-
-        <!-- CARD -->
-        <div class="card">
-
-            <!-- FORM VIEW -->
-            <div id="formView">
-
-                <!-- Steps Navigation -->
-                <nav class="steps-nav" id="stepsNav">
-                    <button class="step-btn active" onclick="goStep(1)" id="stepBtn1">
-                        <span class="step-num">1</span>
-                        <span class="step-label">Data Fisik</span>
-                    </button>
-                    <button class="step-btn" onclick="goStep(2)" id="stepBtn2">
-                        <span class="step-num">2</span>
-                        <span class="step-label">Pola Makan</span>
-                    </button>
-                    <button class="step-btn" onclick="goStep(3)" id="stepBtn3">
-                        <span class="step-num">3</span>
-                        <span class="step-label">Gaya Hidup</span>
-                    </button>
-                </nav>
-
-                <!-- Step 1: Data Fisik & Demografi -->
-                <div class="form-section active" id="step1">
-                    <div class="section-title">👤 Data Fisik & Demografi</div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="gender">Jenis Kelamin</label>
-                            <select id="gender">
-                                <option value="male">Laki-laki</option>
-                                <option value="female">Perempuan</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="age">Usia</label>
-                            <div class="range-wrap">
-                                <input type="range" id="age" min="14" max="65" value="22" step="1"
-                                    oninput="updateRange('age', 'ageVal', ' th')">
-                                <span class="range-val" id="ageVal">22 th</span>
-                            </div>
-                            <span class="hint">14 – 65 tahun</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="height">Tinggi Badan (m)</label>
-                            <input type="number" id="height" value="1.70" min="1.40" max="2.10" step="0.01"
-                                placeholder="mis. 1.70">
-                            <span class="hint">Batas: 1.40 – 2.10 m</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="weight">Berat Badan (kg)</label>
-                            <input type="number" id="weight" value="70.0" min="30.0" max="300.0" step="0.1"
-                                placeholder="mis. 70.0">
-                            <span class="hint">Batas: 30.0 – 300.0 kg</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="family_history">Riwayat Overweight Keluarga?</label>
-                            <select id="family_history">
-                                <option value="no">Tidak</option>
-                                <option value="yes">Ya</option>
-                            </select>
-                            <span class="hint">Ada anggota keluarga yang gemuk?</span>
-                        </div>
-                    </div>
-                    <div class="form-nav">
-                        <button class="btn btn-primary" onclick="goStep(2)">Lanjut Pola Makan →</button>
-                    </div>
-                </div>
-
-                <!-- Step 2: Pola Makan -->
-                <div class="form-section" id="step2">
-                    <div class="section-title">🥗 Kebiasaan Makan</div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="favc">Sering Makan Tinggi Kalori?</label>
-                            <select id="favc">
-                                <option value="yes">Ya</option>
-                                <option value="no">Tidak</option>
-                            </select>
-                            <span class="hint">Gorengan, fast food, dll.</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="fcvc">Frekuensi Makan Sayuran</label>
-                            <div class="range-wrap">
-                                <input type="range" id="fcvc" min="1" max="3" value="2" step="0.5"
-                                    oninput="updateRange('fcvc', 'fcvcVal', '')">
-                                <span class="range-val" id="fcvcVal">2</span>
-                            </div>
-                            <span class="hint">1=Jarang, 2=Kadang, 3=Sering</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="ncp">Jumlah Makan Utama / Hari</label>
-                            <div class="range-wrap">
-                                <input type="range" id="ncp" min="1" max="4" value="3" step="1"
-                                    oninput="updateRange('ncp', 'ncpVal', 'x')">
-                                <span class="range-val" id="ncpVal">3x</span>
-                            </div>
-                            <span class="hint">1–4 kali per hari</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="caec">Kebiasaan Ngemil</label>
-                            <select id="caec">
-                                <option value="0">Tidak pernah</option>
-                                <option value="1" selected>Kadang-kadang</option>
-                                <option value="2">Sering</option>
-                                <option value="3">Selalu</option>
-                            </select>
-                            <span class="hint">Camilan di luar jam makan</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="ch2o">Konsumsi Air / Hari</label>
-                            <div class="range-wrap">
-                                <input type="range" id="ch2o" min="1" max="3" value="2" step="0.5"
-                                    oninput="updateRange('ch2o', 'ch2oVal', '')">
-                                <span class="range-val" id="ch2oVal">2</span>
-                            </div>
-                            <span class="hint">1=&lt;1L, 2=1–2L, 3=&gt;2L</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="calc">Konsumsi Alkohol</label>
-                            <select id="calc">
-                                <option value="0" selected>Tidak pernah</option>
-                                <option value="1">Kadang-kadang</option>
-                                <option value="2">Sering</option>
-                                <option value="3">Selalu</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-nav">
-                        <button class="btn btn-ghost" onclick="goStep(1)">← Kembali</button>
-                        <button class="btn btn-primary" onclick="goStep(3)">Lanjut Gaya Hidup →</button>
-                    </div>
-                </div>
-
-                <!-- Step 3: Gaya Hidup -->
-                <div class="form-section" id="step3">
-                    <div class="section-title">🏃 Gaya Hidup & Aktivitas</div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="smoke">Perokok Aktif?</label>
-                            <select id="smoke">
-                                <option value="no" selected>Tidak</option>
-                                <option value="yes">Ya</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="scc">Pantau Kalori Harian?</label>
-                            <select id="scc">
-                                <option value="no" selected>Tidak</option>
-                                <option value="yes">Ya</option>
-                            </select>
-                            <span class="hint">Sering menghitung kalori?</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="faf">Frekuensi Olahraga</label>
-                            <div class="range-wrap">
-                                <input type="range" id="faf" min="0" max="3" value="1" step="0.5"
-                                    oninput="updateRange('faf', 'fafVal', '')">
-                                <span class="range-val" id="fafVal">1</span>
-                            </div>
-                            <span class="hint">0=Tidak pernah, 3=Sangat sering</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="tue">Waktu Layar / Gadget (jam/hari)</label>
-                            <div class="range-wrap">
-                                <input type="range" id="tue" min="0" max="2" value="1" step="0.5"
-                                    oninput="updateRange('tue', 'tueVal', '')">
-                                <span class="range-val" id="tueVal">1</span>
-                            </div>
-                            <span class="hint">0=&lt;3 jam, 2=&gt;5 jam</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="mtrans">Moda Transportasi</label>
-                            <select id="mtrans">
-                                <option value="Public_Transportation">Transportasi Umum</option>
-                                <option value="Automobile">Mobil</option>
-                                <option value="Motorbike" selected>Motor</option>
-                                <option value="Bike">Sepeda</option>
-                                <option value="Walking">Jalan Kaki</option>
-                            </select>
-                            <span class="hint">Transportasi yang paling sering dipakai</span>
-                        </div>
-                    </div>
-                    <div class="form-nav">
-                        <button class="btn btn-ghost" onclick="goStep(2)">← Kembali</button>
-                        <button class="btn btn-submit" id="btnPredict" onclick="runPrediction()">✨ Prediksi
-                            Sekarang</button>
-                    </div>
-                    <div class="error-banner" id="errorBanner"></div>
-                </div>
-
-            </div><!-- /formView -->
-
-            <!-- RESULT VIEW -->
-            <div id="resultView">
-                <div class="result-hero">
-                    <span class="result-emoji" id="rEmoji">🎯</span>
-                    <div class="result-label" id="rLabel">–</div>
-                    <div class="result-confidence" id="rConf">
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                            <circle cx="6" cy="6" r="5" stroke="#14b8a6" stroke-width="1.5" />
-                            <path d="M4 6l1.5 1.5L8 4.5" stroke="#14b8a6" stroke-width="1.5" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                        </svg>
-                        Estimasi kepercayaan: <span id="rConfPct">–</span>
-                    </div>
-                </div>
-
-                <div class="result-grid">
-                    <div class="info-box">
-                        <div class="ib-label">📏 Indeks Massa Tubuh</div>
-                        <div class="ib-value" id="rBmi">–</div>
-                        <div class="ib-sub">kg/m² · <span id="rBmiCat">–</span></div>
-                    </div>
-                    <div class="info-box">
-                        <div class="ib-label">⚡ Model Prediksi</div>
-                        <div class="ib-value" style="font-size:1.1rem; margin-top:0.4rem;" id="rModel">–</div>
-                        <div class="ib-sub" id="rModelSub">Rule-Based + BMI Scoring</div>
-                    </div>
-                </div>
-
-                <div class="recom-box">
-                    <span class="recom-icon">💡</span>
-                    <div class="recom-content">
-                        <div class="recom-title">Saran & Rekomendasi Medis</div>
-                        <p id="rRecom">–</p>
-                    </div>
-                </div>
-
-                <div class="prob-section">
-                    <div class="prob-title">📊 Distribusi Probabilitas Kelas</div>
-                    <div id="probContainer"></div>
-                </div>
-
-                <button class="btn btn-reset" onclick="resetAll()">🔄 Analisis Data Baru</button>
-            </div><!-- /resultView -->
-
-        </div><!-- /card -->
-
-        <div class="footer-note">
-            <strong>ObesityAI</strong> · UAS Pembelajaran Mesin · Universitas Dian Nuswantoro<br>
-            Prediksi bersifat estimasi. Konsultasikan dengan tenaga medis untuk diagnosis resmi.
-        </div>
-
-    </div><!-- /page-wrap -->
-
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
-        <div class="loading-text">🤖 Memproses dengan AI Model...</div>
+        <h1>🩺 ObesityAI</h1>
+        <p>Prediksi tingkat obesitas berdasarkan data fisik dan gaya hidup Anda secara cerdas.</p>
     </div>
 
-    <script>
-        /* ════════════════════════════════════════════════════════
-           CONFIG & MAPPING
-        ════════════════════════════════════════════════════════ */
-        // Otomatis deteksi environment:
-        // - Lokal  → http://localhost:8000/predict
-        // - Deploy → ubah window.API_BASE_URL ke URL Render/AWS Anda
-        const API_BASE = window.API_BASE_URL
-            || (location.hostname === 'localhost' || location.hostname === '127.0.0.1'
-                ? 'http://localhost:8000'
-                : 'https://uas-ml-obesitas.onrender.com');   // ← ganti '' dengan URL Render saat deploy
-        const API_URL = API_BASE + '/predict';
+    <!-- CARD -->
+    <div class="card">
 
-        const ORDER_TARGET = [
-            "Insufficient_Weight", "Normal_Weight",
-            "Overweight_Level_I", "Overweight_Level_II",
-            "Obesity_Type_I", "Obesity_Type_II", "Obesity_Type_III"
-        ];
+        <!-- FORM VIEW -->
+        <div id="formView">
 
-        const CLASS_LABELS = {
-            "Insufficient_Weight": "Berat Badan Kurang",
-            "Normal_Weight": "Berat Badan Normal",
-            "Overweight_Level_I": "Overweight Level I",
-            "Overweight_Level_II": "Overweight Level II",
-            "Obesity_Type_I": "Obesitas Tipe I",
-            "Obesity_Type_II": "Obesitas Tipe II",
-            "Obesity_Type_III": "Obesitas Tipe III (Ekstrem)"
-        };
+            <!-- Steps Navigation -->
+            <nav class="steps-nav" id="stepsNav">
+                <button class="step-btn active" onclick="goStep(1)" id="stepBtn1">
+                    <span class="step-num">1</span>
+                    <span class="step-label">Data Fisik</span>
+                </button>
+                <button class="step-btn" onclick="goStep(2)" id="stepBtn2">
+                    <span class="step-num">2</span>
+                    <span class="step-label">Pola Makan</span>
+                </button>
+                <button class="step-btn" onclick="goStep(3)" id="stepBtn3">
+                    <span class="step-num">3</span>
+                    <span class="step-label">Gaya Hidup</span>
+                </button>
+            </nav>
 
-        const CLASS_EMOJI = {
-            "Insufficient_Weight": "⚠️",
-            "Normal_Weight": "✅",
-            "Overweight_Level_I": "🟡",
-            "Overweight_Level_II": "🟠",
-            "Obesity_Type_I": "🔴",
-            "Obesity_Type_II": "🚨",
-            "Obesity_Type_III": "🆘"
-        };
+            <!-- Step 1: Data Fisik & Demografi -->
+            <div class="form-section active" id="step1">
+                <div class="section-title">👤 Data Fisik & Demografi</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="gender">Jenis Kelamin</label>
+                        <select id="gender">
+                            <option value="male">Laki-laki</option>
+                            <option value="female">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Usia</label>
+                        <div class="range-wrap">
+                            <input type="range" id="age" min="14" max="65" value="22" step="1" oninput="updateRange('age', 'ageVal', ' th')">
+                            <span class="range-val" id="ageVal">22 th</span>
+                        </div>
+                        <span class="hint">14 – 65 tahun</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="height">Tinggi Badan (m)</label>
+                        <input type="number" id="height" value="1.70" min="1.40" max="2.10" step="0.01" placeholder="mis. 1.70">
+                        <span class="hint">Batas: 1.40 – 2.10 m</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="weight">Berat Badan (kg)</label>
+                        <input type="number" id="weight" value="70.0" min="30.0" max="300.0" step="0.1" placeholder="mis. 70.0">
+                        <span class="hint">Batas: 30.0 – 300.0 kg</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="family_history">Riwayat Overweight Keluarga?</label>
+                        <select id="family_history">
+                            <option value="no">Tidak</option>
+                            <option value="yes">Ya</option>
+                        </select>
+                        <span class="hint">Ada anggota keluarga yang gemuk?</span>
+                    </div>
+                </div>
+                <div class="form-nav">
+                    <button class="btn btn-primary" onclick="goStep(2)">Lanjut Pola Makan →</button>
+                </div>
+            </div>
 
-        // Mapping nilai caec/calc (angka → label)
-        const ORD_REVERSE = ["Tidak pernah", "Kadang-kadang", "Sering", "Selalu"];
-        // Mapping mtrans value → label API
-        const MTRANS_MAP = {
-            "Public_Transportation": "Transportasi Umum",
-            "Automobile": "Mobil",
-            "Motorbike": "Motor",
-            "Bike": "Sepeda",
-            "Walking": "Jalan Kaki",
-        };
+            <!-- Step 2: Pola Makan -->
+            <div class="form-section" id="step2">
+                <div class="section-title">🥗 Kebiasaan Makan</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="favc">Sering Makan Tinggi Kalori?</label>
+                        <select id="favc">
+                            <option value="yes">Ya</option>
+                            <option value="no">Tidak</option>
+                        </select>
+                        <span class="hint">Gorengan, fast food, dll.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="fcvc">Frekuensi Makan Sayuran</label>
+                        <div class="range-wrap">
+                            <input type="range" id="fcvc" min="1" max="3" value="2" step="0.5" oninput="updateRange('fcvc', 'fcvcVal', '')">
+                            <span class="range-val" id="fcvcVal">2</span>
+                        </div>
+                        <span class="hint">1=Jarang, 2=Kadang, 3=Sering</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="ncp">Jumlah Makan Utama / Hari</label>
+                        <div class="range-wrap">
+                            <input type="range" id="ncp" min="1" max="4" value="3" step="1" oninput="updateRange('ncp', 'ncpVal', 'x')">
+                            <span class="range-val" id="ncpVal">3x</span>
+                        </div>
+                        <span class="hint">1–4 kali per hari</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="caec">Kebiasaan Ngemil</label>
+                        <select id="caec">
+                            <option value="0">Tidak pernah</option>
+                            <option value="1" selected>Kadang-kadang</option>
+                            <option value="2">Sering</option>
+                            <option value="3">Selalu</option>
+                        </select>
+                        <span class="hint">Camilan di luar jam makan</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="ch2o">Konsumsi Air / Hari</label>
+                        <div class="range-wrap">
+                            <input type="range" id="ch2o" min="1" max="3" value="2" step="0.5" oninput="updateRange('ch2o', 'ch2oVal', '')">
+                            <span class="range-val" id="ch2oVal">2</span>
+                        </div>
+                        <span class="hint">1=&lt;1L, 2=1–2L, 3=&gt;2L</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="calc">Konsumsi Alkohol</label>
+                        <select id="calc">
+                            <option value="0" selected>Tidak pernah</option>
+                            <option value="1">Kadang-kadang</option>
+                            <option value="2">Sering</option>
+                            <option value="3">Selalu</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-nav">
+                    <button class="btn btn-ghost" onclick="goStep(1)">← Kembali</button>
+                    <button class="btn btn-primary" onclick="goStep(3)">Lanjut Gaya Hidup →</button>
+                </div>
+            </div>
 
-        /* BMI Category */
-        function bmiCat(bmi) {
-            if (bmi < 18.5) return "Berat Badan Kurang (< 18.5)";
-            if (bmi < 25.0) return "Normal (18.5–24.9)";
-            if (bmi < 30.0) return "Overweight (25–29.9)";
-            if (bmi < 40.0) return "Obesitas (30–39.9)";
-            return "Obesitas Ekstrem (≥ 40)";
-        }
+            <!-- Step 3: Gaya Hidup -->
+            <div class="form-section" id="step3">
+                <div class="section-title">🏃 Gaya Hidup & Aktivitas</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="smoke">Perokok Aktif?</label>
+                        <select id="smoke">
+                            <option value="no" selected>Tidak</option>
+                            <option value="yes">Ya</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="scc">Pantau Kalori Harian?</label>
+                        <select id="scc">
+                            <option value="no" selected>Tidak</option>
+                            <option value="yes">Ya</option>
+                        </select>
+                        <span class="hint">Sering menghitung kalori?</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="faf">Frekuensi Olahraga</label>
+                        <div class="range-wrap">
+                            <input type="range" id="faf" min="0" max="3" value="1" step="0.5" oninput="updateRange('faf', 'fafVal', '')">
+                            <span class="range-val" id="fafVal">1</span>
+                        </div>
+                        <span class="hint">0=Tidak pernah, 3=Sangat sering</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="tue">Waktu Layar / Gadget (jam/hari)</label>
+                        <div class="range-wrap">
+                            <input type="range" id="tue" min="0" max="2" value="1" step="0.5" oninput="updateRange('tue', 'tueVal', '')">
+                            <span class="range-val" id="tueVal">1</span>
+                        </div>
+                        <span class="hint">0=&lt;3 jam, 2=&gt;5 jam</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="mtrans">Moda Transportasi</label>
+                        <select id="mtrans">
+                            <option value="Public_Transportation">Transportasi Umum</option>
+                            <option value="Automobile">Mobil</option>
+                            <option value="Motorbike" selected>Motor</option>
+                            <option value="Bike">Sepeda</option>
+                            <option value="Walking">Jalan Kaki</option>
+                        </select>
+                        <span class="hint">Transportasi yang paling sering dipakai</span>
+                    </div>
+                </div>
+                <div class="form-nav">
+                    <button class="btn btn-ghost" onclick="goStep(2)">← Kembali</button>
+                    <button class="btn btn-submit" onclick="runPrediction()">✨ Prediksi Sekarang</button>
+                </div>
+            </div>
 
-        /* ════════════════════════════════════════════════════════
-           UI LOGIC
-        ════════════════════════════════════════════════════════ */
-        let currentStep = 1;
+        </div><!-- /formView -->
 
-        function goStep(n) {
-            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.step-btn').forEach((b, i) => {
-                b.classList.remove('active', 'done');
-                if (i + 1 < n) b.classList.add('done');
-                else if (i + 1 === n) b.classList.add('active');
-            });
-            document.getElementById('step' + n).classList.add('active');
-            currentStep = n;
-        }
+        <!-- RESULT VIEW -->
+        <div id="resultView">
+            <div class="result-hero">
+                <span class="result-emoji" id="rEmoji">🎯</span>
+                <div class="result-label" id="rLabel">–</div>
+                <div class="result-confidence" id="rConf">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#14b8a6" stroke-width="1.5"/><path d="M4 6l1.5 1.5L8 4.5" stroke="#14b8a6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Estimasi kepercayaan: <span id="rConfPct">–</span>
+                </div>
+            </div>
 
-        function updateRange(id, valId, suffix) {
-            const val = document.getElementById(id).value;
-            document.getElementById(valId).textContent = val + suffix;
-        }
+            <div class="result-grid">
+                <div class="info-box">
+                    <div class="ib-label">📏 Indeks Massa Tubuh</div>
+                    <div class="ib-value" id="rBmi">–</div>
+                    <div class="ib-sub">kg/m² · <span id="rBmiCat">–</span></div>
+                </div>
+                <div class="info-box">
+                    <div class="ib-label">⚡ Model Prediksi</div>
+                    <div class="ib-value" style="font-size:1.1rem; margin-top:0.4rem;" id="rModel">–</div>
+                    <div class="ib-sub" id="rModelSub">Rule-Based + BMI Scoring</div>
+                </div>
+            </div>
 
-        function getVal(id) { return document.getElementById(id).value; }
+            <div class="recom-box">
+                <span class="recom-icon">💡</span>
+                <div class="recom-content">
+                    <div class="recom-title">Saran & Rekomendasi Medis</div>
+                    <p id="rRecom">–</p>
+                </div>
+            </div>
 
-        async function runPrediction() {
-            const h = parseFloat(getVal('height'));
-            const w = parseFloat(getVal('weight'));
+            <div class="prob-section">
+                <div class="prob-title">📊 Distribusi Probabilitas Kelas</div>
+                <div id="probContainer"></div>
+            </div>
 
-            if (isNaN(h) || h < 1.40 || h > 2.10) {
-                alert('Tinggi badan tidak valid! Masukkan antara 1.40 – 2.10 m');
-                goStep(1); return;
-            }
-            if (isNaN(w) || w < 30 || w > 300) {
-                alert('Berat badan tidak valid! Masukkan antara 30 – 300 kg');
-                goStep(1); return;
-            }
+            <button class="btn btn-reset" onclick="resetAll()">🔄 Analisis Data Baru</button>
+        </div><!-- /resultView -->
 
-            // Sembunyikan error lama
-            const errEl = document.getElementById('errorBanner');
-            errEl.classList.remove('show');
+    </div><!-- /card -->
 
-            // Disable tombol + tampilkan loading
-            const btnPredict = document.getElementById('btnPredict');
-            btnPredict.disabled = true;
-            document.getElementById('loadingOverlay').classList.add('show');
+    <div class="footer-note">
+        <strong>ObesityAI</strong> · UAS Pembelajaran Mesin · Universitas Dian Nuswantoro<br>
+        Prediksi bersifat estimasi. Konsultasikan dengan tenaga medis untuk diagnosis resmi.
+    </div>
 
-            // Konversi nilai form ke format yang diharapkan API
-            const caecIdx = parseInt(getVal('caec'));
-            const calcIdx = parseInt(getVal('calc'));
-            const mtransVal = getVal('mtrans');
-            const genderVal = getVal('gender') === 'male' ? 'Laki-laki' : 'Perempuan';
-            const famHistVal = getVal('family_history') === 'yes' ? 'Ya' : 'Tidak';
-            const favcVal = getVal('favc') === 'yes' ? 'Ya' : 'Tidak';
-            const smokeVal = getVal('smoke') === 'yes' ? 'Ya' : 'Tidak';
-            const sccVal = getVal('scc') === 'yes' ? 'Ya' : 'Tidak';
+</div><!-- /page-wrap -->
 
-            const payload = {
-                gender: genderVal,
-                age: parseFloat(getVal('age')),
-                height: h,
-                weight: w,
-                family_history_with_overweight: famHistVal,
-                favc: favcVal,
-                fcvc: parseFloat(getVal('fcvc')),
-                ncp: parseFloat(getVal('ncp')),
-                caec: ORD_REVERSE[caecIdx],
-                calc: ORD_REVERSE[calcIdx],
-                ch2o: parseFloat(getVal('ch2o')),
-                smoke: smokeVal,
-                scc: sccVal,
-                faf: parseFloat(getVal('faf')),
-                tue: parseFloat(getVal('tue')),
-                mtrans: MTRANS_MAP[mtransVal] || mtransVal
-            };
+<script>
+/* ════════════════════════════════════════════════════════
+   DATA & MAPPING
+════════════════════════════════════════════════════════ */
+const ORDER_TARGET = [
+    "Insufficient_Weight", "Normal_Weight",
+    "Overweight_Level_I", "Overweight_Level_II",
+    "Obesity_Type_I", "Obesity_Type_II", "Obesity_Type_III"
+];
 
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+const CLASS_LABELS = {
+    "Insufficient_Weight":  "Berat Badan Kurang",
+    "Normal_Weight":        "Berat Badan Normal",
+    "Overweight_Level_I":   "Overweight Level I",
+    "Overweight_Level_II":  "Overweight Level II",
+    "Obesity_Type_I":       "Obesitas Tipe I",
+    "Obesity_Type_II":      "Obesitas Tipe II",
+    "Obesity_Type_III":     "Obesitas Tipe III (Ekstrem)"
+};
 
-                if (!response.ok) {
-                    const errData = await response.json().catch(() => ({}));
-                    throw new Error(errData.detail || `HTTP ${response.status}`);
-                }
+const CLASS_EMOJI = {
+    "Insufficient_Weight":  "⚠️",
+    "Normal_Weight":        "✅",
+    "Overweight_Level_I":   "🟡",
+    "Overweight_Level_II":  "🟠",
+    "Obesity_Type_I":       "🔴",
+    "Obesity_Type_II":      "🚨",
+    "Obesity_Type_III":     "🆘"
+};
 
-                const data = await response.json();
-                showResultFromAPI(data);
+const REKOMENDASI = {
+    "Insufficient_Weight":  "Tingkatkan asupan kalori bergizi dan konsultasi dengan ahli gizi untuk rencana makan yang tepat.",
+    "Normal_Weight":        "Pertahankan pola makan seimbang dan aktivitas fisik rutin. Anda sudah berada di jalur yang tepat!",
+    "Overweight_Level_I":   "Mulai kurangi makanan tinggi kalori dan tingkatkan aktivitas fisik minimal 30 menit per hari.",
+    "Overweight_Level_II":  "Disarankan konsultasi dokter dan olahraga terstruktur. Perhatikan asupan makanan secara ketat.",
+    "Obesity_Type_I":       "Segera konsultasi dokter atau ahli gizi untuk program penurunan berat badan yang terstruktur.",
+    "Obesity_Type_II":      "Penanganan medis diperlukan. Konsultasikan dengan dokter spesialis untuk intervensi yang tepat.",
+    "Obesity_Type_III":     "Diperlukan intervensi medis segera dari dokter spesialis obesitas. Jangan tunda konsultasi!"
+};
 
-            } catch (err) {
-                errEl.innerHTML = `<strong>⚠️ Gagal menghubungi API:</strong> ${err.message}<br>
-            <small>Pastikan server FastAPI sudah jalan: <code>uvicorn api_fastapi:app --host 0.0.0.0 --port 8000</code></small>`;
-                errEl.classList.add('show');
-            } finally {
-                document.getElementById('loadingOverlay').classList.remove('show');
-                btnPredict.disabled = false;
-            }
-        }
+/* ════════════════════════════════════════════════════════
+   SCORING ENGINE (Rule-Based + BMI + Lifestyle Score)
+════════════════════════════════════════════════════════ */
+function predict(inputs) {
+    const { height, weight, gender, age, familyHistory, favc,
+            fcvc, ncp, caec, ch2o, calc, smoke, scc, faf, tue, mtrans } = inputs;
 
-        function showResultFromAPI(data) {
-            // Parse respons dari FastAPI
-            const classKey = data.prediction.class_id;
-            const label = data.prediction.label;
-            const confidence = data.prediction.confidence_percent;
-            const bmi = data.bmi_info.bmi_value;
-            const bmiCatStr = data.bmi_info.bmi_category;
-            const recom = data.recommendation;
-            const modelUsed = data.model_used || 'ObesityAI ML';
-            const probsObj = data.probabilities || {}; // { "Berat Badan Normal": 87.5, ... }
+    const bmi = weight / (height * height);
 
-            document.getElementById('rEmoji').textContent = CLASS_EMOJI[classKey] || '🎯';
-            document.getElementById('rLabel').textContent = label;
-            document.getElementById('rConfPct').textContent = confidence + '%';
-            document.getElementById('rBmi').textContent = bmi;
-            document.getElementById('rBmiCat').textContent = bmiCatStr;
-            document.getElementById('rModel').textContent = modelUsed.replace('_', ' ').toUpperCase();
-            document.getElementById('rRecom').textContent = recom;
+    // Base score dari BMI (0 = kurang, 6 = obesitas ekstrem)
+    let baseScore;
+    if (bmi < 16)       baseScore = 0.0;
+    else if (bmi < 18.5) baseScore = 0.6;
+    else if (bmi < 22)   baseScore = 1.0;
+    else if (bmi < 25)   baseScore = 1.4;
+    else if (bmi < 27.5) baseScore = 2.1;
+    else if (bmi < 30)   baseScore = 2.7;
+    else if (bmi < 32.5) baseScore = 3.5;
+    else if (bmi < 35)   baseScore = 4.0;
+    else if (bmi < 37.5) baseScore = 4.6;
+    else if (bmi < 40)   baseScore = 5.2;
+    else if (bmi < 45)   baseScore = 5.7;
+    else                 baseScore = 6.0;
 
-            // Render probability bars dari probabilities dict
-            const container = document.getElementById('probContainer');
-            container.innerHTML = '';
+    // Risk modifiers dari lifestyle
+    let mod = 0;
 
-            // Susun dari ORDER_TARGET agar urutan konsisten
-            const probData = ORDER_TARGET.map(key => ({
-                key,
-                label: CLASS_LABELS[key],
-                pct: Math.round(probsObj[CLASS_LABELS[key]] || 0)
-            })).sort((a, b) => b.pct - a.pct);
+    // Riwayat keluarga
+    if (familyHistory === 'yes') mod += 0.4;
 
-            probData.forEach(item => {
-                const isTop = item.key === classKey;
-                container.insertAdjacentHTML('beforeend', `
+    // Makanan tinggi kalori
+    if (favc === 'yes') mod += 0.3;
+    if (favc === 'no')  mod -= 0.1;
+
+    // Sayuran (makin sering lebih baik)
+    mod -= (fcvc - 1) * 0.1; // maks -0.2
+
+    // Frekuensi makan
+    if (ncp >= 4) mod += 0.2;
+    if (ncp <= 2) mod -= 0.1;
+
+    // Ngemil
+    mod += caec * 0.15; // 0 → 0.45
+
+    // Air
+    mod -= (ch2o - 1) * 0.1; // maks -0.2
+
+    // Alkohol
+    mod += calc * 0.1;
+
+    // Merokok
+    if (smoke === 'yes') mod += 0.15;
+
+    // Pantau kalori
+    if (scc === 'yes') mod -= 0.2;
+
+    // Olahraga (makin sering makin baik)
+    mod -= faf * 0.25; // maks -0.75
+
+    // Waktu layar
+    mod += tue * 0.12; // maks 0.24
+
+    // Transportasi aktif = lebih sehat
+    if (mtrans === 'Walking') mod -= 0.3;
+    else if (mtrans === 'Bike') mod -= 0.2;
+    else if (mtrans === 'Public_Transportation') mod -= 0.05;
+    else if (mtrans === 'Automobile') mod += 0.1;
+
+    // Usia
+    if (age > 40) mod += 0.1;
+    if (age > 55) mod += 0.1;
+
+    // Total score
+    let score = baseScore + mod;
+    score = Math.max(0, Math.min(6, score));
+
+    // Konversi ke probabilitas distribusi gaussian di sekitar score
+    const probs = ORDER_TARGET.map((_, i) => {
+        const diff = Math.abs(i - score);
+        return Math.exp(-0.7 * diff * diff);
+    });
+
+    // Normalisasi
+    const total = probs.reduce((a, b) => a + b, 0);
+    const normProbs = probs.map(p => p / total);
+
+    // Kelas prediksi = indeks tertinggi
+    const predIdx = normProbs.indexOf(Math.max(...normProbs));
+
+    return {
+        classKey: ORDER_TARGET[predIdx],
+        probs: normProbs,
+        bmi: Math.round(bmi * 100) / 100
+    };
+}
+
+/* BMI Category */
+function bmiCat(bmi) {
+    if (bmi < 18.5) return "Berat Badan Kurang (< 18.5)";
+    if (bmi < 25.0) return "Normal (18.5–24.9)";
+    if (bmi < 30.0) return "Overweight (25–29.9)";
+    if (bmi < 40.0) return "Obesitas (30–39.9)";
+    return "Obesitas Ekstrem (≥ 40)";
+}
+
+/* ════════════════════════════════════════════════════════
+   UI LOGIC
+════════════════════════════════════════════════════════ */
+let currentStep = 1;
+
+function goStep(n) {
+    document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.step-btn').forEach((b, i) => {
+        b.classList.remove('active', 'done');
+        if (i + 1 < n)      b.classList.add('done');
+        else if (i + 1 === n) b.classList.add('active');
+    });
+    document.getElementById('step' + n).classList.add('active');
+    currentStep = n;
+}
+
+function updateRange(id, valId, suffix) {
+    const val = document.getElementById(id).value;
+    document.getElementById(valId).textContent = val + suffix;
+}
+
+function getVal(id) { return document.getElementById(id).value; }
+
+function runPrediction() {
+    const h = parseFloat(getVal('height'));
+    const w = parseFloat(getVal('weight'));
+
+    if (isNaN(h) || h < 1.40 || h > 2.10) {
+        alert('Tinggi badan tidak valid! Masukkan antara 1.40 – 2.10 m');
+        goStep(1); return;
+    }
+    if (isNaN(w) || w < 30 || w > 300) {
+        alert('Berat badan tidak valid! Masukkan antara 30 – 300 kg');
+        goStep(1); return;
+    }
+
+    const inputs = {
+        gender:        getVal('gender'),
+        age:           parseFloat(getVal('age')),
+        height:        h,
+        weight:        w,
+        familyHistory: getVal('family_history'),
+        favc:          getVal('favc'),
+        fcvc:          parseFloat(getVal('fcvc')),
+        ncp:           parseFloat(getVal('ncp')),
+        caec:          parseInt(getVal('caec')),
+        ch2o:          parseFloat(getVal('ch2o')),
+        calc:          parseInt(getVal('calc')),
+        smoke:         getVal('smoke'),
+        scc:           getVal('scc'),
+        faf:           parseFloat(getVal('faf')),
+        tue:           parseFloat(getVal('tue')),
+        mtrans:        getVal('mtrans')
+    };
+
+    const result = predict(inputs);
+    showResult(result, inputs);
+}
+
+function showResult(result, inputs) {
+    const { classKey, probs, bmi } = result;
+    const label = CLASS_LABELS[classKey];
+    const confidence = Math.round(probs[ORDER_TARGET.indexOf(classKey)] * 100);
+
+    document.getElementById('rEmoji').textContent    = CLASS_EMOJI[classKey];
+    document.getElementById('rLabel').textContent    = label;
+    document.getElementById('rConfPct').textContent  = confidence + '%';
+    document.getElementById('rBmi').textContent      = bmi;
+    document.getElementById('rBmiCat').textContent   = bmiCat(bmi);
+    document.getElementById('rModel').textContent    = 'ObesityAI v1';
+    document.getElementById('rRecom').textContent    = REKOMENDASI[classKey];
+
+    // Render probability bars
+    const container = document.getElementById('probContainer');
+    container.innerHTML = '';
+
+    const probData = ORDER_TARGET.map((key, i) => ({
+        key, label: CLASS_LABELS[key], pct: Math.round(probs[i] * 100)
+    })).sort((a, b) => b.pct - a.pct);
+
+    probData.forEach(item => {
+        const isTop = item.key === classKey;
+        container.insertAdjacentHTML('beforeend', `
             <div class="prob-item">
                 <div class="prob-row">
                     <span class="prob-name ${isTop ? 'top' : ''}">${item.label}</span>
@@ -1280,33 +1090,32 @@
                 </div>
             </div>
         `);
+    });
+
+    // Switch views
+    document.getElementById('formView').style.display = 'none';
+    document.getElementById('resultView').style.display = 'block';
+
+    // Animate bars after paint
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            document.querySelectorAll('.prob-fill').forEach(el => {
+                el.style.width = el.dataset.width + '%';
             });
+        });
+    });
 
-            // Switch views
-            document.getElementById('formView').style.display = 'none';
-            document.getElementById('resultView').style.display = 'block';
+    // Scroll to top of card
+    document.querySelector('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
-            // Animate bars after paint
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    document.querySelectorAll('.prob-fill').forEach(el => {
-                        el.style.width = el.dataset.width + '%';
-                    });
-                });
-            });
-
-            // Scroll to top of card
-            document.querySelector('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        function resetAll() {
-            document.getElementById('resultView').style.display = 'none';
-            document.getElementById('formView').style.display = 'block';
-            goStep(1);
-            document.querySelector('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    </script>
+function resetAll() {
+    document.getElementById('resultView').style.display = 'none';
+    document.getElementById('formView').style.display = 'block';
+    goStep(1);
+    document.querySelector('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
 
 </body>
-
 </html>

@@ -96,63 +96,24 @@ def preprocess_input(gender_male, age, height, weight, family_history, favc,
       family_history, favc, smoke, scc : bool
       caec_level, calc_level : int 0-3 (no/Sometimes/Frequently/Always)
       mtrans : salah satu dari ["Automobile","Bike","Motorbike","Public_Transportation","Walking"]
-    
-    PENTING: Nilai numerik di-clip ke rentang training data (Winsorization bounds)
-    untuk mencegah out-of-distribution input yang bisa menyebabkan prediksi error.
     """
-    # Clip ke rentang training data untuk mencegah out-of-distribution values
-    age = float(np.clip(age, 14.0, 61.0))
-    height = float(np.clip(height, 1.45, 1.98))
-    weight = float(np.clip(weight, 39.0, 173.0))
-    fcvc = float(np.clip(fcvc, 1.0, 3.0))
-    ncp = float(np.clip(ncp, 1.0, 4.0))
-    ch2o = float(np.clip(ch2o, 1.0, 3.0))
-    faf = float(np.clip(faf, 0.0, 3.0))
-    tue = float(np.clip(tue, 0.0, 2.0))
-    
     mtrans_options = ["Automobile", "Bike", "Motorbike", "Public_Transportation", "Walking"]
     mtrans_enc = {f"MTRANS_{m}": int(m == mtrans) for m in mtrans_options}
 
     row = {
         "Gender": int(gender_male),
-        "Age": age, "Height": height, "Weight": weight,
+        "Age": float(age), "Height": float(height), "Weight": float(weight),
         "family_history_with_overweight": int(family_history),
-        "FAVC": int(favc), "FCVC": fcvc, "NCP": ncp,
-        "CAEC": float(caec_level), "SMOKE": int(smoke), "CH2O": ch2o,
-        "SCC": int(scc), "FAF": faf, "TUE": tue, "CALC": float(calc_level),
+        "FAVC": int(favc), "FCVC": float(fcvc), "NCP": float(ncp),
+        "CAEC": float(caec_level), "SMOKE": int(smoke), "CH2O": float(ch2o),
+        "SCC": int(scc), "FAF": float(faf), "TUE": float(tue), "CALC": float(calc_level),
         **mtrans_enc,
     }
     return pd.DataFrame([row])[FEATURE_COLS].astype(float)
 
 
 def predict(df_input: pd.DataFrame, model, scaler):
-    """
-    Kembalikan (label_kelas, array_probabilitas[7]).
-    
-    Menggunakan pendekatan hybrid rule-based + ML:
-    - Untuk kasus ekstrem (BMI < 18.5 atau ≥ 40), gunakan aturan medis standar
-    - Untuk kasus normal (BMI 18.5-40), gunakan model ML untuk prediksi yang lebih nuanced
-    
-    Ini memastikan akurasi medis untuk edge cases sambil memanfaatkan ML untuk kasus kompleks.
-    """
-    # Ekstrak Height & Weight ASLI (sebelum scaling) untuk validasi BMI
-    height_raw = df_input['Height'].iloc[0]
-    weight_raw = df_input['Weight'].iloc[0]
-    bmi = weight_raw / (height_raw ** 2)
-    
-    # Override berbasis aturan medis standar untuk kasus ekstrem
-    if bmi >= 40.0:
-        # BMI ≥ 40 adalah Obesity Type III (Extreme) menurut WHO/CDC
-        probs = np.zeros(7)
-        probs[6] = 1.0  # Index 6 = Obesity_Type_III
-        return ORDER_TARGET[6], probs
-    elif bmi < 18.5:
-        # BMI < 18.5 adalah Insufficient Weight menurut WHO/CDC
-        probs = np.zeros(7)
-        probs[0] = 1.0  # Index 0 = Insufficient_Weight
-        return ORDER_TARGET[0], probs
-    
-    # Untuk kasus normal (BMI 18.5-40), gunakan model ML
+    """Kembalikan (label_kelas, array_probabilitas[7])."""
     if scaler is not None:
         X = pd.DataFrame(scaler.transform(df_input), columns=df_input.columns)
     else:
@@ -161,8 +122,7 @@ def predict(df_input: pd.DataFrame, model, scaler):
     if hasattr(model, "predict_proba"):
         probs = np.asarray(model.predict_proba(X)[0])
     else:
-        probs = np.zeros(7)
-        probs[pred_idx] = 1.0
+        probs = np.zeros(7); probs[pred_idx] = 1.0
     return ORDER_TARGET[pred_idx], probs
 
 

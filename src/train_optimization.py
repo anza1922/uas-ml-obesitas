@@ -23,6 +23,7 @@ Output:
 """
 
 import os
+import sys
 import time
 import json
 import joblib
@@ -30,6 +31,11 @@ import warnings
 import pandas as pd
 import numpy as np
 warnings.filterwarnings("ignore")
+
+# Pastikan src/ ada di sys.path agar bisa dijalankan dari root maupun dari src/
+_SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+if _SRC_DIR not in sys.path:
+    sys.path.insert(0, _SRC_DIR)
 
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
@@ -42,7 +48,10 @@ from sklearn.metrics import (
     f1_score, balanced_accuracy_score, confusion_matrix, classification_report
 )
 
-from preprocessing import run_preprocessing
+try:
+    from preprocessing import run_preprocessing
+except ImportError:
+    from src.preprocessing import run_preprocessing
 
 # ── Path otomatis ────────────────────────────────────────────────────────────
 _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -176,6 +185,11 @@ def main():
     X_train_sc = pd.DataFrame(scaler.fit_transform(X_train), columns=X_train.columns)
     X_test_sc  = pd.DataFrame(scaler.transform(X_test), columns=X_test.columns)
 
+    # Simpan scaler yang sudah di-fit
+    scaler_path = os.path.join(MODELS_DIR, "scaler.joblib")
+    joblib.dump(scaler, scaler_path)
+    print(f"Scaler disimpan ke: {scaler_path}")
+
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=RANDOM_SEED)
 
     all_results = []
@@ -199,18 +213,18 @@ def main():
         delta_f1 = opt["f1_macro"] - base["f1_macro"]
         print(f"  Δ F1-macro (optimized - baseline) = {delta_f1:+.4f}")
 
-        for stage, res in [("baseline", base), ("optimized", opt)]:
+        for stage, res in [("Baseline", base), ("Optimized", opt)]:
             all_results.append({
-                "model": name,
-                "stage": stage,
-                "params": json.dumps(res["params"], default=str),
-                "accuracy": res["accuracy"],
-                "precision_weighted": res["precision_weighted"],
-                "recall_weighted": res["recall_weighted"],
-                "f1_weighted": res["f1_weighted"],
-                "f1_macro": res["f1_macro"],
-                "balanced_accuracy": res["balanced_accuracy"],
-                "train_ms": res["train_ms"],
+                "Model":              name,
+                "Stage":              stage,
+                "Accuracy":           round(res["accuracy"], 4),
+                "Precision (w)":      round(res["precision_weighted"], 4),
+                "Recall (w)":         round(res["recall_weighted"], 4),
+                "F1 (weighted)":      round(res["f1_weighted"], 4),
+                "F1-macro":           round(res["f1_macro"], 4),
+                "Balanced Acc":       round(res["balanced_accuracy"], 4),
+                "Train (ms)":         round(res["train_ms"], 1),
+                "params":             json.dumps(res["params"], default=str),
             })
 
         # Simpan model optimized
@@ -236,13 +250,13 @@ def main():
     print(f"✓ Error analysis disimpan: {error_path}")
 
     # ── Ringkasan model terbaik ──────────────────────────────────────────────
-    best_row = results_df[results_df["stage"] == "optimized"].sort_values(
-        "f1_macro", ascending=False
+    best_row = results_df[results_df["Stage"] == "Optimized"].sort_values(
+        "F1-macro", ascending=False
     ).iloc[0]
     print("\n" + "=" * 70)
     print("MODEL TERBAIK (berdasarkan F1-macro optimized):")
-    print(f"  {best_row['model']}  |  F1-macro={best_row['f1_macro']:.4f}  "
-          f"| BalAcc={best_row['balanced_accuracy']:.4f}")
+    print(f"  {best_row['Model']}  |  F1-macro={best_row['F1-macro']:.4f}  "
+          f"| BalAcc={best_row['Balanced Acc']:.4f}")
     print("=" * 70)
 
     # Pola kelas yang sering keliru (dari seluruh model)
