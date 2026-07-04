@@ -668,8 +668,8 @@
                     </div>
                     <div class="form-group">
                         <label for="weight">Berat Badan (kg)</label>
-                        <input type="number" id="weight" value="70.0" min="30.0" max="300.0" step="0.1" placeholder="mis. 70.0">
-                        <span class="hint">Batas: 30.0 – 300.0 kg</span>
+                        <input type="number" id="weight" value="70.0" min="30.0" max="250.0" step="0.1" placeholder="mis. 70.0">
+                        <span class="hint">Batas: 30.0 – 250.0 kg</span>
                     </div>
                     <div class="form-group">
                         <label for="family_history">Riwayat Overweight Keluarga?</label>
@@ -708,7 +708,7 @@
                     <div class="form-group">
                         <label for="ncp">Jumlah Makan Utama / Hari</label>
                         <div class="range-wrap">
-                            <input type="range" id="ncp" min="1" max="4" value="3" step="1" oninput="updateRange('ncp', 'ncpVal', 'x')">
+                            <input type="range" id="ncp" min="1" max="4" value="3" step="0.5" oninput="updateRange('ncp', 'ncpVal', 'x')">
                             <span class="range-val" id="ncpVal">3x</span>
                         </div>
                         <span class="hint">1–4 kali per hari</span>
